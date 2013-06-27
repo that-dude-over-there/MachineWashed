@@ -18,7 +18,7 @@ namespace MachineWashed
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 
-		Sprite sprite;
+		Player player;
 		public Game1() : base()
 		{
 			graphics = new GraphicsDeviceManager(this);
@@ -27,14 +27,21 @@ namespace MachineWashed
 
 		protected override void Initialize()
 		{
-			sprite=new Sprite("faceSheet",new Vector2(200,200),32,32,0);
+			player=new Player("faceSheet",new Vector2(200,200),32,32,0,this);
+			level=new Level();
+			level.add(new Wall("wall",new Vector2(200,300),32,32,0,this));
+			level.add(new Wall("wall",new Vector2(232,300),32,32,0,this));
+			level.add(new Wall("wall",new Vector2(264,300),32,32,0,this));
+			level.add(new Wall("wall",new Vector2(264,268),32,32,0,this));
+
 			base.Initialize();
 		}
 
 		protected override void LoadContent()
 		{
 			spriteBatch = new SpriteBatch(GraphicsDevice);
-			sprite.loadContent(this.Content);
+			level.loadContent(this.Content);
+			player.loadContent(this.Content);
 		}
 
 		protected override void UnloadContent()
@@ -47,7 +54,7 @@ namespace MachineWashed
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
 				Exit();
 
-			sprite.update(gameTime);
+			player.update(gameTime);
 			base.Update(gameTime);
 		}
 
@@ -55,7 +62,8 @@ namespace MachineWashed
 		{
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 			spriteBatch.Begin();
-			sprite.draw(spriteBatch);
+			player.draw(spriteBatch);
+			level.draw(spriteBatch);
 			spriteBatch.End();
 			base.Draw(gameTime);
 		}

@@ -86,6 +86,7 @@ namespace MachineWashed
 		{
 			int cols=width/(frameWidth+offset);
 			int rows=height/(frameHeight+offset);
+			int count=0;
 
 			rowFrames=new int[rows];
 			
@@ -96,16 +97,24 @@ namespace MachineWashed
 			}
 
 			Rectangle extracted;
-			Color[] rawColor=new Color[frameWidth*frameHeight];
+			Color[] rawColor=new Color[Tex.Width*Tex.Height];
+			Color[] frameColors=new Color[frameWidth*frameHeight];
+			Tex.GetData<Color>(rawColor);
 
 			for(int i=0;i<rows;i++)
 			{
 				for(int j=0;j<cols;j++)
 				{
 					extracted=new Rectangle((j*frameWidth)+((j+1)*offset),(i*frameHeight)+((i+1)*offset),frameWidth,frameHeight);
-					Tex.GetData<Color>(0,extracted,rawColor,0,frameWidth*frameHeight);
+					for(int k=extracted.Y;k<extracted.Height;k++)
+					{
+						for(int z=extracted.X;z<extracted.Width;z++)
+						{
+							frameColors[count++]=rawColor[k*z];
+						}
+					}
 
-					if (checkFilled(rawColor,i,j))
+					if (checkFilled(frameColors,i,j))
 					{
 						rowFrames[i]=j;
 						break;
